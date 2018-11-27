@@ -2,6 +2,7 @@ package com.example.alexisapp;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.StringJoiner;
@@ -10,7 +11,7 @@ import java.util.StringJoiner;
 public class BackhaulData {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String address;
     private String gps_signal;

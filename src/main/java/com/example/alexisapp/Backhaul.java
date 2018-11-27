@@ -4,24 +4,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 
 public class Backhaul {
     public static void main(String[] args) {
         Configuration cfg = new Configuration();
-        Properties p = new Properties();
-//load properties file
-        try {
-            p.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("hibernate.properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        cfg.setProperties(p);
         cfg.addAnnotatedClass(BackhaulData.class);
-// build session factory
 
 
         try (SessionFactory sessionFactory = cfg.buildSessionFactory()) {
