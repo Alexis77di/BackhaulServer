@@ -1,6 +1,5 @@
 package com.example.alexisapp;
 
-
 import com.google.gson.Gson;
 
 import javax.websocket.Encoder;

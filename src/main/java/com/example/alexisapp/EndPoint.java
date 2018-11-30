@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+//import javax.websocket.server.EndpointServer;
+
 
 @ServerEndpoint(value = "/chat/{username}", decoders = MessageDecoder.class, encoders = MessageEncoder.class)
 public class EndPoint {
@@ -29,7 +31,7 @@ public class EndPoint {
     }
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("username") String username) throws IOException, EncodeException {
+    public void onOpen(Session session, @PathParam("username") String username) {
 
         this.session = session;
         chatEndpoints.add(this);
@@ -42,13 +44,13 @@ public class EndPoint {
     }
 
     @OnMessage
-    public void onMessage(Session session, Message message) throws IOException, EncodeException {
+    public void onMessage(Session session, Message message) {
         message.setFrom(users.get(session.getId()));
         broadcast(message);
     }
 
     @OnClose
-    public void onClose(Session session) throws IOException, EncodeException {
+    public void onClose(Session session) {
         chatEndpoints.remove(this);
         Message message = new Message();
         message.setFrom(users.get(session.getId()));
