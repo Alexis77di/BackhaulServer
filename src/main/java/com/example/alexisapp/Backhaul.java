@@ -30,13 +30,16 @@ public class Backhaul {
     private static void persist(SessionFactory sessionFactory) {
         BackhaulData p1 = new BackhaulData();
         BackhaulData p2 = new BackhaulData();
+        BackhaulData p3 = new BackhaulData();
         System.out.println(p1);
         System.out.println(p2);
+        System.out.println(p3);
 
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         session.save(p1);
         session.save(p2);
+        session.save(p3);
         session.getTransaction().commit();
     }
 }
