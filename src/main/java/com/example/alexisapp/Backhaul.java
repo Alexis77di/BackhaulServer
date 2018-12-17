@@ -18,31 +18,22 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 
 public class Backhaul {
     public static void main(String[] args) {
         parseTrain();
+        try {
+            new WebSocket().send(15123);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Configuration cfg = new Configuration();
         cfg.addAnnotatedClass(BackhaulData.class);
 
-
         try (SessionFactory sessionFactory = cfg.buildSessionFactory()) {
             persist(sessionFactory);
             load(sessionFactory);
-        }
-    }
-
-    private static <K, V> void initMap(Map<K, List<V>> map, K key, V val) {
-        if (map.containsKey(key)) {
-            List<V> col = map.get(key);
-            col.add(val);
-        } else {
-            List<V> col = new ArrayList<>();
-            col.add(val);
-            map.put(key, col);
         }
     }
 
@@ -80,7 +71,6 @@ public class Backhaul {
                     for (List<String> column : csv) {
                         row.add(Entropy.calculateEntropy(column.stream().map(Double::parseDouble).mapToDouble(Double::doubleValue).toArray()));
                     }
-                    System.out.println(row);
                     printer.printRecord(row);
                 } catch (IOException e) {
                     e.printStackTrace();
