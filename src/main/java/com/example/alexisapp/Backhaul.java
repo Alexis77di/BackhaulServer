@@ -23,7 +23,7 @@ public class Backhaul {
     public static void main(String[] args) {
         parseTrain();
         try {
-            new WebSocket().send(15123);
+            WebSocketServer.send("test.csv", 15123);
         } catch (IOException e) {
             e.printStackTrace();
         }
