@@ -2,9 +2,7 @@ package com.example.alexisapp;
 
 import featureSelectionMetricsPackage.Entropy;
 import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.csv.CSVRecord;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -16,11 +14,13 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class Backhaul {
-    public static void main(String[] args) {
+    final static String edgeIp = "127.0.0.1";
+
+    public static void main(String[] args) throws IOException {
         parseTrain();
         try {
             WebSocketServer.send("test.csv", 15123);
@@ -35,7 +35,20 @@ public class Backhaul {
             persist(sessionFactory);
             load(sessionFactory);
         }
+        Random r = new Random();
+        while (true) {
+
+            String topic = WebSocketServer.recieve(edgeIp, 15123);
+            String[] arr = topic.split("/");
+            String mac = arr[0];
+            String accelero = arr[1];
+            String location = arr[2];
+            String eyesclosed = arr[3];
+            int status = r.nextInt(3);
+            WebSocketServer.answer(status, 15123);
+        }
     }
+
 
     private static void parseTrain() {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
@@ -53,28 +66,11 @@ public class Backhaul {
         CSVFormat pFormat = CSVFormat.DEFAULT.withHeader("FILE", "AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4");
         try (CSVPrinter printer = pFormat.print(new File("test.csv"), Charset.defaultCharset())) {
             for (File file : files) {
-                List<Object> row = new ArrayList<>(15);
-                row.add(file.getName());
-                try {
-                    Reader in = new FileReader(file);
-                    CSVParser records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
-                    List<List<String>> csv = new ArrayList<>();
-                    for (int i = 0; i < 14; i++) {
-                        csv.add(new ArrayList<>());
-                    }
-                    for (CSVRecord record : records) {
-                        Iterator<String> iterator = record.iterator();
-                        for (int i = 0; i < 14; i++) {
-                            csv.get(i).add(iterator.next());
-                        }
-                    }
-                    for (List<String> column : csv) {
-                        row.add(Entropy.calculateEntropy(column.stream().map(Double::parseDouble).mapToDouble(Double::doubleValue).toArray()));
-                    }
-                    printer.printRecord(row);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Reader in = new FileReader(file);
+                List<Object> ob = new ArrayList<>(Entropy.calculate(in));
+                ob.add(0, file.getName());
+                printer.printRecord(ob);
+
             }
         } catch (IOException e) {
             e.printStackTrace();

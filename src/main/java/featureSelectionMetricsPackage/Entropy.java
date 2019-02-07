@@ -27,6 +27,16 @@
 
 package featureSelectionMetricsPackage;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Implements common discrete Shannon Entropy functions.
  * Provides: univariate entropy H(X),
@@ -66,5 +76,26 @@ public abstract class Entropy {
         return entropy;
     }//calculateEntropy(double [])
 
-
+    public static List<Double> calculate(Reader in) {
+        List<Double> row = new ArrayList<>(14);
+        try {
+            CSVParser records = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
+            List<List<String>> csv = new ArrayList<>();
+            for (int i = 0; i < 14; i++) {
+                csv.add(new ArrayList<>());
+            }
+            for (CSVRecord record : records) {
+                Iterator<String> iterator = record.iterator();
+                for (int i = 0; i < 14; i++) {
+                    csv.get(i).add(iterator.next());
+                }
+            }
+            for (List<String> column : csv) {
+                row.add(Entropy.calculateEntropy(column.stream().map(Double::parseDouble).mapToDouble(Double::doubleValue).toArray()));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
 }//class Entropy
