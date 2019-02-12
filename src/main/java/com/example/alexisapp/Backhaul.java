@@ -15,12 +15,11 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class Backhaul {
     final static String edgeIp = "127.0.0.1";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         parseTrain();
         try {
             WebSocketServer.send("test.csv", 15123);
@@ -35,18 +34,17 @@ public class Backhaul {
             persist(sessionFactory);
             load(sessionFactory);
         }
-        Random r = new Random();
-        while (true) {
-
-            String topic = WebSocketServer.recieve(edgeIp, 15123);
-            String[] arr = topic.split("/");
-            String mac = arr[0];
-            String accelero = arr[1];
-            String location = arr[2];
-            String eyesclosed = arr[3];
-            int status = r.nextInt(3);
-            WebSocketServer.answer(status, 15123);
-        }
+//        while (true) {
+//
+//            String topic = WebSocketServer.recieve(edgeIp, 2469);
+//            String[] arr = topic.split("/");
+//            String mac = arr[0];
+//            String accelero = arr[1];
+//            String location = arr[2];
+//            String eyesclosed = arr[3];
+//            int status = eyesclosed.equals("1")?1:0;
+//            WebSocketServer.answer(status, 2470);
+//        }
     }
 
 

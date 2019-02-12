@@ -45,6 +45,7 @@ class WebSocketServer {
         os.write(status);
         os.flush();
         socket.close();
+        serverSocket.close();
         System.out.println("File transfer complete");
     }
 }
