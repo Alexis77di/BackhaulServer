@@ -34,17 +34,6 @@ public class Backhaul {
             persist(sessionFactory);
             load(sessionFactory);
         }
-//        while (true) {
-//
-//            String topic = WebSocketServer.recieve(edgeIp, 2469);
-//            String[] arr = topic.split("/");
-//            String mac = arr[0];
-//            String accelero = arr[1];
-//            String location = arr[2];
-//            String eyesclosed = arr[3];
-//            int status = eyesclosed.equals("1")?1:0;
-//            WebSocketServer.answer(status, 2470);
-//        }
     }
 
 
